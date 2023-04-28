@@ -1,14 +1,16 @@
 package com.edgar.uhaul.services;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.edgar.uhaul.exceptions.LocationDoesntExistException;
-import com.edgar.uhaul.exceptions.StorageAlreadyExists;
+import com.edgar.uhaul.exceptions.StorageAlreadyExistsException;
 import com.edgar.uhaul.models.Location;
 import com.edgar.uhaul.models.Storage;
+import com.edgar.uhaul.models.enums.StorageSizeType;
 import com.edgar.uhaul.repositories.LocationRepository;
 import com.edgar.uhaul.repositories.StorageRepository;
 
@@ -28,19 +30,37 @@ public class StorageService {
 		Location location = location_at.orElseThrow(
 				() -> new LocationDoesntExistException("location :: " + storage.getLocationAt() + " doesnt exist"));
 
-		if ((!isExistsByName(storage.getStorageName()))
-				&& (isExistsByLocationName(storage.getLocationAt()) && (location.getHasStorageUnits() == true))) {
+		if ((isExistsByLocationName(storage.getLocationAt()) && (location.getHasStorageUnits() == true))) {
+			
+			 if(storage.getStorageSize() == StorageSizeType.SMALL) {
+				storage.setMonthlyFee(new BigDecimal("109.95"));
+				storage.setStorageName(StorageSizeType.SMALL.toString().toLowerCase()+ " | "+ storage.getStorageDimension());
+			}
+			 else if(storage.getStorageSize() == StorageSizeType.MEDIUM) {
+				storage.setMonthlyFee(new BigDecimal("159.99"));
+				storage.setStorageName(StorageSizeType.MEDIUM.toString().toLowerCase()+ " | "+ storage.getStorageDimension());
+
+			}
+			 else if(storage.getStorageSize() == StorageSizeType.LARGE) {
+				storage.setMonthlyFee(new BigDecimal("239.99"));
+				storage.setStorageName(StorageSizeType.LARGE.toString().toLowerCase()+ " | "+ storage.getStorageDimension());
+
+			}
+			 
+			
+			
+			
 
 			location.getStorage().add(storage);
 			storageRepository.save(storage);
 			locationRepository.save(location);
+			return storage;
 			
 
 		} else {
-			throw new StorageAlreadyExists("Storage already exists for that");
+			throw new StorageAlreadyExistsException("Storage already exists for that");
 		}
-		
-		return storage;
+			
 
 	}
 	
@@ -49,9 +69,9 @@ public class StorageService {
 	
 
 	/* checks */
-	private boolean isExistsByName(String name) {
-		return storageRepository.existsByStorageName(name) ? true : false;
-	}
+//	private boolean isExistsByName(String name) {
+//		return storageRepository.existsByStorageName(name) ? true : false;
+//	}
 
 	private boolean isExistsByLocationName(String name) {
 		return locationRepository.existsByLocationName(name) ? true : false;

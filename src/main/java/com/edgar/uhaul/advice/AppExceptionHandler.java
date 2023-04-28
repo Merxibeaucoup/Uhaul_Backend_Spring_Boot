@@ -10,15 +10,41 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.edgar.uhaul.exceptions.LocationAlreadyExistsException;
+import com.edgar.uhaul.exceptions.LocationCantHaveStorageUnitsException;
+import com.edgar.uhaul.exceptions.LocationDoesntExistException;
+import com.edgar.uhaul.exceptions.StorageAlreadyExistsException;
 
 @ControllerAdvice
 public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler(LocationAlreadyExistsException.class)
-	public ResponseEntity<Object> handleEventDoesntExist(LocationAlreadyExistsException ex, WebRequest request) {
+	public ResponseEntity<Object> handleLocationAlreadyExist(LocationAlreadyExistsException ex, WebRequest request) {
 
 		return new ResponseEntity<>(new ApiError(ex.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now()),
 				HttpStatus.BAD_REQUEST);
 	}
+	
+	@ExceptionHandler(LocationDoesntExistException.class)
+	public ResponseEntity<Object> handleLocationDoesntExist(LocationDoesntExistException ex, WebRequest request) {
+
+		return new ResponseEntity<>(new ApiError(ex.getMessage(), HttpStatus.NOT_FOUND, LocalDateTime.now()),
+				HttpStatus.NOT_FOUND);
+	}
+	
+	@ExceptionHandler(LocationCantHaveStorageUnitsException.class)
+	public ResponseEntity<Object> handleLocationCantHaveStorageUnits(LocationCantHaveStorageUnitsException ex, WebRequest request) {
+
+		return new ResponseEntity<>(new ApiError(ex.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now()),
+				HttpStatus.BAD_REQUEST);
+	}
+	
+	@ExceptionHandler(StorageAlreadyExistsException.class)
+	public ResponseEntity<Object> handleLocationDoesntExist(StorageAlreadyExistsException ex, WebRequest request) {
+
+		return new ResponseEntity<>(new ApiError(ex.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now()),
+				HttpStatus.BAD_REQUEST);
+	}
+	
+	
 
 }
