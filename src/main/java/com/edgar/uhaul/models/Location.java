@@ -2,9 +2,6 @@ package com.edgar.uhaul.models;
 
 import java.util.Set;
 
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-
 import jakarta.annotation.Nullable;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -50,11 +47,11 @@ public class Location extends BaseEntity {
 	@Column(name = "zipcode")
 	private String locationStreetZipCode;
 
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@Nullable
 	private Set<Truck> trucks;
 
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@Nullable
 	private Set<Storage> storage;
 

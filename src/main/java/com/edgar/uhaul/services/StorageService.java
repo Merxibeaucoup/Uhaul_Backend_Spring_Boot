@@ -32,14 +32,15 @@ public class StorageService {
 				&& (isExistsByLocationName(storage.getLocationAt()) && (location.getHasStorageUnits() == true))) {
 
 			location.getStorage().add(storage);
+			storageRepository.save(storage);
 			locationRepository.save(location);
-			return  storageRepository.save(storage);
+			
 
 		} else {
 			throw new StorageAlreadyExists("Storage already exists for that");
 		}
 		
-		
+		return storage;
 
 	}
 	
