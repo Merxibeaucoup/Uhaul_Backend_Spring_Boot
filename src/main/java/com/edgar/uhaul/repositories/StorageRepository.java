@@ -1,5 +1,6 @@
 package com.edgar.uhaul.repositories;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,5 +13,7 @@ public interface StorageRepository extends JpaRepository<Storage, Long> {
 	
 	Optional<Storage> findByStorageName(String storageName);
 	boolean existsByStorageName(String storageName);
+	
+	List<Storage> findByLocationAt(String locationAt);
 
 }

@@ -1,7 +1,11 @@
 package com.edgar.uhaul.services;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +17,7 @@ import com.edgar.uhaul.models.Storage;
 import com.edgar.uhaul.models.enums.StorageSizeType;
 import com.edgar.uhaul.repositories.LocationRepository;
 import com.edgar.uhaul.repositories.StorageRepository;
+import com.edgar.uhaul.responses.StorageResponse;
 
 @Service
 public class StorageService {
@@ -48,8 +53,6 @@ public class StorageService {
 			}
 			 
 			
-			
-			
 
 			location.getStorage().add(storage);
 			storageRepository.save(storage);
@@ -61,6 +64,26 @@ public class StorageService {
 			throw new StorageAlreadyExistsException("Storage already exists for that");
 		}
 			
+
+	}
+	
+	
+	/* find all storage units at location */
+	public Set<Storage> findStorageUnitsAtLocation(String locationName){		
+		Set<Storage> storage = new HashSet<>();	
+		List<Location> location = locationRepository.findAll()
+				.stream()
+				.filter(l -> l.getLocationName() != null
+				&& l.getLocationName().equals(locationName)
+				&& l.getHasStorageUnits().equals(true)
+				).collect(Collectors.toList());
+		
+		if(location.size() > 0) {			
+			 location.stream()
+			.forEach(s -> storage.addAll(s.getStorage()));
+		}
+			
+		return storage;
 
 	}
 	
