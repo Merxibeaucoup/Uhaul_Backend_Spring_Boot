@@ -37,9 +37,19 @@ public class LocationController {
 		return ResponseEntity.ok(locationService.getAll());
 	}
 	
-	@GetMapping("/zipcode")
-	public ResponseEntity<List<Location>> getAllLocationsByZipcode(@RequestParam String zipcode){
-		return ResponseEntity.ok(locationService.getAllByZipCode(zipcode));
+	@GetMapping("/with-storage/zipcode")
+	public ResponseEntity<List<Location>> getAllLocationsWithStorageByZipcode(@RequestParam String zipcode){
+		return ResponseEntity.ok(locationService.getAllWithStorageByZipCode(zipcode));
+	}
+	
+	@GetMapping("/with-storage/city")
+	public ResponseEntity<List<Location>> getAllLocationsWithStorageByCity(@RequestParam String city){
+		return ResponseEntity.ok(locationService.getAllWithStorageByCity(city));
+	}
+	
+	@GetMapping("/with-storage/state")
+	public ResponseEntity<List<Location>> getAllLocationsWithStorageByState(@RequestParam String state){
+		return ResponseEntity.ok(locationService.getAllWithStorageByState(state));
 	}
 
 }

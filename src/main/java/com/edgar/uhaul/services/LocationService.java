@@ -33,9 +33,10 @@ public class LocationService {
 		return locationRepository.findAll();
 	}
 	
+	/******************************************* Have Storage Units **********************************************************/
 	
-	/* get all locations within that zipCode that have storages */
-	public List<Location> getAllByZipCode(String zipcode){
+	/* get all locations within that zipCode that have storage units */
+	public List<Location> getAllWithStorageByZipCode(String zipcode){
 		if(isExistsByZipCode(zipcode)) {
 			List<Location> location = locationRepository.findAll()
 					.stream()
@@ -48,6 +49,44 @@ public class LocationService {
 		}
 		else  
 			throw new LocationDoesntExistException("location with zipcode :: "+ zipcode + " doesnt exist or doesnt have storage units");
+	}
+	
+	
+	/* get all locations within that city that have storage units */
+	public List<Location> getAllWithStorageByCity(String city){
+		
+		if(isExistsByLocationCity(city)) {
+			List<Location> location = locationRepository.findAll()
+					.stream()
+					.filter(l -> 
+					l.getLocationStreetCity() != null
+					&& l.getLocationStreetCity().equals(city)
+					&& l.getHasStorageUnits() == true
+							).collect(Collectors.toList());
+			
+			return location;
+		}
+		else  
+			throw new LocationDoesntExistException("location with zipcode :: "+ city + " doesnt exist or doesnt have storage units");
+	}
+	
+	
+	/* get all locations within that state that have storage units */
+	public List<Location> getAllWithStorageByState(String state){
+		
+		if(isExistsByLocationState(state)) {
+			List<Location> location = locationRepository.findAll()
+					.stream()
+					.filter(l -> 
+					l.getLocationStreetCity() != null
+					&& l.getLocationStreetState().equals(state)
+					&& l.getHasStorageUnits() == true
+							).collect(Collectors.toList());
+			
+			return location;
+		}
+		else  
+			throw new LocationDoesntExistException("location with zipcode :: "+ state + " doesnt exist or doesnt have storage units");
 	}
 	
 	
