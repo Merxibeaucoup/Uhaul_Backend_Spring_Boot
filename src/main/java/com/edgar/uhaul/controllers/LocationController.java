@@ -1,6 +1,7 @@
 package com.edgar.uhaul.controllers;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -56,9 +57,11 @@ public class LocationController {
 	
 	/********************** Trucks ****************************/
 	
-	@GetMapping("/truckname/zipcode")
-	public ResponseEntity<List<Location>> getAllLocationsWithTruckNameAndZipcode(@RequestParam String truckName, @RequestParam String zipcode){
-		return ResponseEntity.ok(locationService.getAllLocationsWithTrucksWithZipcode(truckName, zipcode));
+	@GetMapping("/truckname/locationType")
+	public ResponseEntity<Set<Location>> getAllLocationsWithTruckNameAndLocationType(@RequestParam String truckName, @RequestParam String locationRequest){
+		return ResponseEntity.ok(locationService.getAllLocationsWithTrucksWithLocationCityStateOrZip(truckName, locationRequest));
 	}
+	
+
 
 }

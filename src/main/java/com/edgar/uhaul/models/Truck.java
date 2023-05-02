@@ -4,12 +4,14 @@ import java.math.BigDecimal;
 import java.util.Set;
 
 import com.edgar.uhaul.models.enums.TruckType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -60,5 +62,9 @@ public class Truck extends BaseEntity {
 
 	@Nullable
 	private String locationAt;
+	
+	@ManyToOne
+	@JsonIgnore
+	private Location location;
 
 }

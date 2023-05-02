@@ -36,6 +36,7 @@ public class TruckService {
 			truck.setTruckName(truck.getTruckSize()+"' "+ truck.getTruckType().label);
 			location.getTrucks().add(truck);
 			truckRepository.save(truck);
+			truck.setLocation(location);
 			locationRepository.save(location);
 			 return truck;
 		}

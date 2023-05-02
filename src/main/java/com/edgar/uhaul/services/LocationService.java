@@ -1,7 +1,8 @@
 package com.edgar.uhaul.services;
 
+import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,22 +98,30 @@ public class LocationService {
 	
 	/******************************************* Have Trucks  **********************************************************/
 	 
-	/* get All Locations With Trucks With ZipCode */
-	public List<Location> getAllLocationsWithTrucksWithZipcode(String truckName, String zipcode){	
+	/* get All Locations With Trucks With locationType  -> works */
+	public Set<Location> getAllLocationsWithTrucksWithLocationCityStateOrZip(String truckName, String locationRequest){	
 		
-		Truck truck = (Truck) truckRepository.findByTruckName(truckName);
-		List<Location> locations  = locationRepository.findAll()
+		Set<Location> locations = new HashSet<>();			
+		List<Truck> trucks = truckRepository.findAll()
 				.stream()
-				.filter(l -> 
-				l.getLocationStreetZipCode()!=null
-				&& l.getTrucks().contains(truck)
-				&& l.getLocationStreetZipCode() == zipcode
-						)
-				.collect(Collectors.toList());
+				.filter(t -> t.getLocation() !=null
+				&& t.getLocation().getLocationStreetZipCode()!=null
+				&& t.getLocation().getLocationStreetZipCode().equals(locationRequest)
+				|| t.getLocation().getLocationStreetCity().equals(locationRequest)
+				|| t.getLocation().getLocationStreetState().equals(locationRequest)
+				&& t.getTruckName().equals(truckName)
+						).collect(Collectors.toList());
+		
+		if(trucks.size() > 0) {
+			trucks.stream()
+			.forEach(l -> locations.add(l.getLocation()));
+		}
 		
 		return locations;
 		
 	}
+	
+	
 	
 	
 	
