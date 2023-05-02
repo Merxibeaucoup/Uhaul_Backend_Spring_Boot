@@ -13,6 +13,7 @@ import com.edgar.uhaul.exceptions.LocationAlreadyExistsException;
 import com.edgar.uhaul.exceptions.LocationCantHaveStorageUnitsException;
 import com.edgar.uhaul.exceptions.LocationDoesntExistException;
 import com.edgar.uhaul.exceptions.StorageAlreadyExistsException;
+import com.edgar.uhaul.exceptions.TruckAlreadyExistsException;
 
 @ControllerAdvice
 public class AppExceptionHandler extends ResponseEntityExceptionHandler {
@@ -39,7 +40,14 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 	}
 	
 	@ExceptionHandler(StorageAlreadyExistsException.class)
-	public ResponseEntity<Object> handleLocationDoesntExist(StorageAlreadyExistsException ex, WebRequest request) {
+	public ResponseEntity<Object> handleStorageAlreadyExistsException(StorageAlreadyExistsException ex, WebRequest request) {
+
+		return new ResponseEntity<>(new ApiError(ex.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now()),
+				HttpStatus.BAD_REQUEST);
+	}
+	
+	@ExceptionHandler(TruckAlreadyExistsException.class)
+	public ResponseEntity<Object> handleTruckAlreadyExistsException(TruckAlreadyExistsException ex, WebRequest request) {
 
 		return new ResponseEntity<>(new ApiError(ex.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now()),
 				HttpStatus.BAD_REQUEST);

@@ -23,8 +23,11 @@ import lombok.Setter;
 @RequiredArgsConstructor
 @Table(name = "trucks")
 public class Truck extends BaseEntity {
-
+	
 	@NotNull
+	private Integer truckSize;
+
+	@Nullable
 	private String truckName;
 
 	@NotNull

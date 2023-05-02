@@ -37,6 +37,7 @@ public class StorageService {
 
 		if ((isExistsByLocationName(storage.getLocationAt()) && (location.getHasStorageUnits() == true))) {
 			
+			//for now --> delete after admin panel
 			 if(storage.getStorageSize() == StorageSizeType.SMALL) {
 				storage.setMonthlyFee(new BigDecimal("109.95"));
 				storage.setStorageName(StorageSizeType.SMALL.toString().toLowerCase()+ " | "+ storage.getStorageDimension());

@@ -1,6 +1,7 @@
 package com.edgar.uhaul.services;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,13 +10,18 @@ import org.springframework.stereotype.Service;
 import com.edgar.uhaul.exceptions.LocationAlreadyExistsException;
 import com.edgar.uhaul.exceptions.LocationDoesntExistException;
 import com.edgar.uhaul.models.Location;
+import com.edgar.uhaul.models.Truck;
 import com.edgar.uhaul.repositories.LocationRepository;
+import com.edgar.uhaul.repositories.TruckRepository;
 
 @Service
 public class LocationService {
 	
 	@Autowired
 	private LocationRepository locationRepository;
+	
+	@Autowired
+	private TruckRepository truckRepository;
 	
 	
 	/* create new location */
@@ -87,6 +93,25 @@ public class LocationService {
 		}
 		else  
 			throw new LocationDoesntExistException("location with zipcode :: "+ state + " doesnt exist or doesnt have storage units");
+	}
+	
+	/******************************************* Have Trucks  **********************************************************/
+	 
+	/* get All Locations With Trucks With ZipCode */
+	public List<Location> getAllLocationsWithTrucksWithZipcode(String truckName, String zipcode){	
+		
+		Truck truck = (Truck) truckRepository.findByTruckName(truckName);
+		List<Location> locations  = locationRepository.findAll()
+				.stream()
+				.filter(l -> 
+				l.getLocationStreetZipCode()!=null
+				&& l.getTrucks().contains(truck)
+				&& l.getLocationStreetZipCode() == zipcode
+						)
+				.collect(Collectors.toList());
+		
+		return locations;
+		
 	}
 	
 	

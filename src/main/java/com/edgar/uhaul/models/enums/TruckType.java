@@ -1,9 +1,18 @@
 package com.edgar.uhaul.models.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum TruckType {
 	
-	PICKUPTRUCK,
-	CARGOVAN,
-	TRUCK
+	PICKUPTRUCK("Pickup Truck"),
+	CARGOVAN("Cargo Van"),
+	TRUCK("Truck");
+	
+	public final String label;
+
+	TruckType(String label) {
+		this.label = label;
+	}
 
 }
