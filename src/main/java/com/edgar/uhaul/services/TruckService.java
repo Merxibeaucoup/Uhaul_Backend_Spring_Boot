@@ -14,6 +14,7 @@ import com.edgar.uhaul.models.Location;
 import com.edgar.uhaul.models.Truck;
 import com.edgar.uhaul.repositories.LocationRepository;
 import com.edgar.uhaul.repositories.TruckRepository;
+import com.edgar.uhaul.requests.TruckRequest;
 
 @Service
 public class TruckService {
@@ -45,7 +46,7 @@ public class TruckService {
 		
 	}
 	
-	/* get all trucks in zipcode  change this to --> all ... city , state, zipcode */	
+	/* get all trucks in zipcode  changed to below - */	
 	public Set<Truck> AllTrucksInZipcode(String zipcode){	
 		
 		Set<Truck> trucks = new HashSet<>();
@@ -63,6 +64,43 @@ public class TruckService {
 		
 		return trucks;
 		
+	}
+	
+	
+	/* get all trucks at location*/
+	public Set<Truck> getAllTrucksAtLocation(TruckRequest truckRequest){
+		
+		Set<Truck> trucks_at_location = new HashSet<>();
+		
+		List<Location> location  = locationRepository.findAll()
+				.stream()
+				.filter(l ->
+				l.getLocationStreetCity()!=null	&& l.getLocationStreetCity().equals(truckRequest.getPickUplocation())
+				|| l.getLocationStreetState()!=null	&& l.getLocationStreetState().equals(truckRequest.getPickUplocation())
+				|| l.getLocationStreetZipCode()!=null	&& l.getLocationStreetZipCode().equals(truckRequest.getPickUplocation())
+						).collect(Collectors.toList());
+				
+	
+		if(location.size() > 0) {
+			location
+			.stream()
+			.forEach(t -> trucks_at_location.addAll(t.getTrucks()));
+		}
+		
+		
+		if(truckRequest.getDropOffLocation() != null) 
+		{
+				truckRequest.setDropOffLocation(truckRequest.getPickUplocation());
+		}
+		else {
+					truckRequest.setDropOffLocation(truckRequest.getDropOffLocation());			
+		}	
+			
+		return  trucks_at_location;
+	
+	
+		
+		// in the front end use a set and get only  unique truckNames
 	}
 	
 	

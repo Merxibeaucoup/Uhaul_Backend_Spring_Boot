@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.edgar.uhaul.models.Truck;
+import com.edgar.uhaul.requests.TruckRequest;
 import com.edgar.uhaul.services.TruckService;
 
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,12 @@ public class TruckController {
 		return ResponseEntity.ok(truckService.AllTrucksInZipcode(zipcode));
 	}
 	
+	
+	
+	@GetMapping("/location")
+	public ResponseEntity<Set<Truck>> getAllTrucksAtLocation(@RequestBody TruckRequest truckRequest){
+		return ResponseEntity.ok(truckService.getAllTrucksAtLocation(truckRequest));
+	}
 	
 	
 
