@@ -99,7 +99,7 @@ public class LocationService {
 	/******************************************* Have Trucks  **********************************************************/
 	 
 	/* get All Locations With Trucks With locationType  -> works */
-	public Set<Location> getAllLocationsWithTrucksWithLocationCityStateOrZip(String truckName, String locationRequest){	
+	public Set<Location> getAllLocationsWithTrucksAtLocationCityStateOrZip(String truckName, String locationRequest){	
 		
 		Set<Location> locations = new HashSet<>();			
 		List<Truck> trucks = truckRepository.findAll()

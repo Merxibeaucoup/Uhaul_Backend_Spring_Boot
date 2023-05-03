@@ -59,7 +59,7 @@ public class LocationController {
 	
 	@GetMapping("/truckname/locationType")
 	public ResponseEntity<Set<Location>> getAllLocationsWithTruckNameAndLocationType(@RequestParam String truckName, @RequestParam String locationRequest){
-		return ResponseEntity.ok(locationService.getAllLocationsWithTrucksWithLocationCityStateOrZip(truckName, locationRequest));
+		return ResponseEntity.ok(locationService.getAllLocationsWithTrucksAtLocationCityStateOrZip(truckName, locationRequest));
 	}
 	
 

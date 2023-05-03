@@ -45,7 +45,7 @@ public class TruckService {
 		
 	}
 	
-	/* get all trucks in zipcode */	
+	/* get all trucks in zipcode  change this to --> all ... city , state, zipcode */	
 	public Set<Truck> AllTrucksInZipcode(String zipcode){	
 		
 		Set<Truck> trucks = new HashSet<>();
