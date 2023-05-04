@@ -86,14 +86,13 @@ public class TruckService {
 		}
 		
 		
-		if(truckRequest.getDropOffLocation() != null) 
-		{
-				truckRequest.setDropOffLocation(truckRequest.getPickUplocation());
+		if(truckRequest.getDropOffLocation() == null) 
+		{	//set dropoff => pickup location
+			truckRequest.setDropOffLocation(truckRequest.getPickUplocation());
 		}
 		else {
-					truckRequest.setDropOffLocation(truckRequest.getDropOffLocation());			
-		}	
-			
+			truckRequest.setDropOffLocation(truckRequest.getDropOffLocation());			
+		}				
 		return  trucks_at_location;		
 		// in the front end use a set and get only  unique truckNames
 	}
