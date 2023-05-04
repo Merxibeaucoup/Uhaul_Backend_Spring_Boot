@@ -12,6 +12,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import com.edgar.uhaul.exceptions.LocationAlreadyExistsException;
 import com.edgar.uhaul.exceptions.LocationCantHaveStorageUnitsException;
 import com.edgar.uhaul.exceptions.LocationDoesntExistException;
+import com.edgar.uhaul.exceptions.PackingSupplyAlreadyExistsException;
+import com.edgar.uhaul.exceptions.PackingSupplyDoesntExistException;
 import com.edgar.uhaul.exceptions.StorageAlreadyExistsException;
 import com.edgar.uhaul.exceptions.TruckAlreadyExistsException;
 import com.edgar.uhaul.exceptions.TruckDoesntExistException;
@@ -56,6 +58,20 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 	
 	@ExceptionHandler(TruckDoesntExistException.class)
 	public ResponseEntity<Object> handleTruckDoesntExistException(TruckDoesntExistException ex, WebRequest request) {
+
+		return new ResponseEntity<>(new ApiError(ex.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now()),
+				HttpStatus.BAD_REQUEST);
+	}
+	
+	@ExceptionHandler(PackingSupplyAlreadyExistsException.class)
+	public ResponseEntity<Object> handleLocationAlreadyExist(PackingSupplyAlreadyExistsException ex, WebRequest request) {
+
+		return new ResponseEntity<>(new ApiError(ex.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now()),
+				HttpStatus.BAD_REQUEST);
+	}
+	
+	@ExceptionHandler(PackingSupplyDoesntExistException.class)
+	public ResponseEntity<Object> handleTruckDoesntExistException(PackingSupplyDoesntExistException ex, WebRequest request) {
 
 		return new ResponseEntity<>(new ApiError(ex.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now()),
 				HttpStatus.BAD_REQUEST);
