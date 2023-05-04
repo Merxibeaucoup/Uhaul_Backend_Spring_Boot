@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Set;
 
 import com.edgar.uhaul.models.enums.StorageSizeType;
+import com.edgar.uhaul.models.enums.StorageType;
 
 import jakarta.annotation.Nullable;
 import jakarta.persistence.Entity;
@@ -31,7 +32,10 @@ public class Storage extends BaseEntity {
 	@NotNull
 	@Enumerated(EnumType.STRING)
 	private StorageSizeType storageSize;
-
+	
+	@Enumerated(EnumType.STRING)
+	private StorageType storageType;
+	
 	@Nullable
 	private String storageImageUrl;
 

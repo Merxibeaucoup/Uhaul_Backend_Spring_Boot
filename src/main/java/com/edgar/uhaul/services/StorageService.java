@@ -12,12 +12,12 @@ import org.springframework.stereotype.Service;
 
 import com.edgar.uhaul.exceptions.LocationDoesntExistException;
 import com.edgar.uhaul.exceptions.StorageAlreadyExistsException;
+import com.edgar.uhaul.exceptions.StorageUnitsDoesntExistAtLocationException;
 import com.edgar.uhaul.models.Location;
 import com.edgar.uhaul.models.Storage;
 import com.edgar.uhaul.models.enums.StorageSizeType;
 import com.edgar.uhaul.repositories.LocationRepository;
 import com.edgar.uhaul.repositories.StorageRepository;
-import com.edgar.uhaul.responses.StorageResponse;
 
 @Service
 public class StorageService {
@@ -52,9 +52,6 @@ public class StorageService {
 				storage.setStorageName(StorageSizeType.LARGE.toString().toLowerCase()+ " | "+ storage.getStorageDimension());
 
 			}
-			 
-			
-
 			location.getStorage().add(storage);
 			storageRepository.save(storage);
 			locationRepository.save(location);
@@ -82,9 +79,12 @@ public class StorageService {
 		if(location.size() > 0) {			
 			 location.stream()
 			.forEach(s -> storage.addAll(s.getStorage()));
+			 return storage;
 		}
+		else 
+			throw new StorageUnitsDoesntExistAtLocationException("Storage units doesnty exist at location :: "+ locationName);
 			
-		return storage;
+		
 
 	}
 	

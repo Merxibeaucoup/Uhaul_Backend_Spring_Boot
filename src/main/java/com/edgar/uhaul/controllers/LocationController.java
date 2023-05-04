@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.edgar.uhaul.models.Location;
+import com.edgar.uhaul.requests.StorageRequest;
 import com.edgar.uhaul.security.user.User;
 import com.edgar.uhaul.services.LocationService;
 
@@ -40,20 +41,14 @@ public class LocationController {
 	
 	/********************** Storage ****************************/
 	
-	@GetMapping("/with-storage/zipcode")
-	public ResponseEntity<List<Location>> getAllLocationsWithStorageByZipcode(@RequestParam String zipcode){
-		return ResponseEntity.ok(locationService.getAllWithStorageByZipCode(zipcode));
+
+	
+	@GetMapping("/with-storage/location")
+	public ResponseEntity<Set<Location>> getAllLocationsWithStorageByZipcode(@RequestBody StorageRequest storageRequest){
+		return ResponseEntity.ok(locationService.getAllStorageShopsAtTargetLocation(storageRequest));
 	}
 	
-	@GetMapping("/with-storage/city")
-	public ResponseEntity<List<Location>> getAllLocationsWithStorageByCity(@RequestParam String city){
-		return ResponseEntity.ok(locationService.getAllWithStorageByCity(city));
-	}
-	
-	@GetMapping("/with-storage/state")
-	public ResponseEntity<List<Location>> getAllLocationsWithStorageByState(@RequestParam String state){
-		return ResponseEntity.ok(locationService.getAllWithStorageByState(state));
-	}
+
 	
 	/********************** Trucks ****************************/
 	

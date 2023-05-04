@@ -10,10 +10,12 @@ import org.springframework.stereotype.Service;
 
 import com.edgar.uhaul.exceptions.LocationAlreadyExistsException;
 import com.edgar.uhaul.exceptions.LocationDoesntExistException;
+import com.edgar.uhaul.exceptions.TruckDoesntExistException;
 import com.edgar.uhaul.models.Location;
 import com.edgar.uhaul.models.Truck;
 import com.edgar.uhaul.repositories.LocationRepository;
 import com.edgar.uhaul.repositories.TruckRepository;
+import com.edgar.uhaul.requests.StorageRequest;
 
 @Service
 public class LocationService {
@@ -42,59 +44,32 @@ public class LocationService {
 	
 	/******************************************* Have Storage Units **********************************************************/
 	
-	/* get all locations within that zipCode that have storage units */
-	public List<Location> getAllWithStorageByZipCode(String zipcode){
-		if(isExistsByZipCode(zipcode)) {
-			List<Location> location = locationRepository.findAll()
-					.stream()
-					.filter(l ->l.getLocationStreetZipCode() != null &&					
-					l.getLocationStreetZipCode().equals(zipcode)
-					&& l.getHasStorageUnits().equals(true))
-					.collect(Collectors.toList());			
-			
-			return location;
-		}
-		else  
-			throw new LocationDoesntExistException("location with zipcode :: "+ zipcode + " doesnt exist or doesnt have storage units");
-	}
 	
 	
-	/* get all locations within that city that have storage units */
-	public List<Location> getAllWithStorageByCity(String city){
+	
+	public Set<Location> getAllStorageShopsAtTargetLocation(StorageRequest storageRequest){		
+		Set<Location> location = new HashSet<>();
+		List<Location> location_at = locationRepository.findAll()
+				.stream()
+				.filter(l -> 
+				l.getLocationStreetCity() != null && l.getLocationStreetCity().equals(storageRequest.getLocationRequest())
+				|| l.getLocationStreetState() != null && l.getLocationStreetState().equals(storageRequest.getLocationRequest())
+				|| l.getLocationStreetZipCode() != null && l.getLocationStreetZipCode().equals(storageRequest.getLocationRequest())
+				&& l.getHasStorageUnits().equals(true)
+				).collect(Collectors.toList());
 		
-		if(isExistsByLocationCity(city)) {
-			List<Location> location = locationRepository.findAll()
-					.stream()
-					.filter(l -> 
-					l.getLocationStreetCity() != null
-					&& l.getLocationStreetCity().equals(city)
-					&& l.getHasStorageUnits() == true
-							).collect(Collectors.toList());
-			
+		if(location_at.size() >0) {
+			location_at.stream()
+			.forEach(e -> location.add(e));
 			return location;
 		}
-		else  
-			throw new LocationDoesntExistException("location with zipcode :: "+ city + " doesnt exist or doesnt have storage units");
-	}
-	
-	
-	/* get all locations within that state that have storage units */
-	public List<Location> getAllWithStorageByState(String state){
-		
-		if(isExistsByLocationState(state)) {
-			List<Location> location = locationRepository.findAll()
-					.stream()
-					.filter(l -> 
-					l.getLocationStreetCity() != null
-					&& l.getLocationStreetState().equals(state)
-					&& l.getHasStorageUnits() == true
-							).collect(Collectors.toList());
+		else 
+			throw new LocationDoesntExistException("location :: "+ storageRequest.getLocationRequest()+ " doesnt exist");
 			
-			return location;
-		}
-		else  
-			throw new LocationDoesntExistException("location with zipcode :: "+ state + " doesnt exist or doesnt have storage units");
+		// sort with size type and storageType in frontEnd
 	}
+	
+
 	
 	/******************************************* Have Trucks  **********************************************************/
 	 
@@ -115,9 +90,12 @@ public class LocationService {
 		if(trucks.size() > 0) {
 			trucks.stream()
 			.forEach(l -> locations.add(l.getLocation()));
+			return locations;
 		}
+		else 
+			throw new TruckDoesntExistException("truck :: "+ truckName +" doesnt exist at :: "+ locationRequest);
 		
-		return locations;
+		
 		
 	}
 	
