@@ -60,10 +60,8 @@ public class TruckService {
 		if(locations.size() > 0) {
 			locations.stream()
 			.forEach(t-> trucks.addAll(t.getTrucks()));
-		}
-		
-		return trucks;
-		
+		}		
+		return trucks;		
 	}
 	
 	
@@ -77,7 +75,7 @@ public class TruckService {
 				.filter(l ->
 				l.getLocationStreetCity()!=null	&& l.getLocationStreetCity().equals(truckRequest.getPickUplocation())
 				|| l.getLocationStreetState()!=null	&& l.getLocationStreetState().equals(truckRequest.getPickUplocation())
-				|| l.getLocationStreetZipCode()!=null	&& l.getLocationStreetZipCode().equals(truckRequest.getPickUplocation())
+				|| l.getLocationStreetZipCode()!=null && l.getLocationStreetZipCode().equals(truckRequest.getPickUplocation())
 						).collect(Collectors.toList());
 				
 	
@@ -96,19 +94,9 @@ public class TruckService {
 					truckRequest.setDropOffLocation(truckRequest.getDropOffLocation());			
 		}	
 			
-		return  trucks_at_location;
-	
-	
-		
+		return  trucks_at_location;		
 		// in the front end use a set and get only  unique truckNames
 	}
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	/* checks */
