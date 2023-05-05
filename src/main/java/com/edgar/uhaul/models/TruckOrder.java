@@ -27,9 +27,11 @@ public class TruckOrder extends BaseEntity {
 	private LocalDate pickUpDate;
 	
 	@NotNull
+	@OneToOne
 	private Location pickUpLocation;
 	
 	@Nullable
+	@OneToOne
 	private Location dropOffLocation;
 
 	@NotNull

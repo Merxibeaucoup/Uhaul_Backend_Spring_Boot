@@ -35,9 +35,9 @@ public class TruckOrderService {
 
 	
 	
-	BigDecimal  packSuppliesSum = new BigDecimal("");
+	BigDecimal  packSuppliesSum = new BigDecimal("0.00");
 	
-	public TruckOrder makeTruckOrderCart(TruckOrderRequest truckOrderRequest) {			
+	public TruckOrder newTruckOrderCart(TruckOrderRequest truckOrderRequest) {			
 		TruckOrder truckOrder = new TruckOrder();	
 				
 		if(!truckOrderRequest.getPackingSupplies().isEmpty()) {			
