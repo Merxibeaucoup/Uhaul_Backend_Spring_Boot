@@ -74,7 +74,7 @@ public class TruckOrderService {
 		truckOrder.setPickUpDate(truckOrderRequest.getPickUpDate());
 			
 		
-		truckOrder.setTotalPrice(truckOrder.getStorage().getMonthlyFee()
+		truckOrder.setTotalPriceDueToday(truckOrder.getStorage().getMonthlyFee()
 				.add(truckOrder.getTruck().getStartPrice().add(packSuppliesSum)
 						));
 			

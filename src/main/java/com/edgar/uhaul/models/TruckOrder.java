@@ -46,6 +46,8 @@ public class TruckOrder extends BaseEntity {
 	@Nullable
 	private Storage storage;
 
-	private BigDecimal totalPrice;
+	private BigDecimal totalPriceDueToday;
+	
+	private BigDecimal overallTotal;
 
 }
