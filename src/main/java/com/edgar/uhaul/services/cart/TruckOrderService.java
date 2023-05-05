@@ -1,4 +1,4 @@
-package com.edgar.uhaul.services;
+package com.edgar.uhaul.services.cart;
 
 import java.math.BigDecimal;
 import java.util.List;
