@@ -58,16 +58,15 @@ public class TruckOrderService {
 						.stream()
 						.filter(t -> t.getSupplyName() != null && t.getSupplyName().equals(e) 
 						).collect(Collectors.toList());
-				
-				
-				supplies.forEach(t -> pSupplies.add(t));			
-					    
+								
+				supplies.forEach(t -> pSupplies.add(t));								    
 			});	
 		}
 		
 		truckOrder.setPackingSupplies(pSupplies);
 		
-		packSuppliesSum = truckOrder.getPackingSupplies().stream()
+		packSuppliesSum = truckOrder.getPackingSupplies()
+				.stream()
                 .map(x -> x.getSupplyPrice()) // map
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 		
