@@ -1,11 +1,13 @@
 package com.edgar.uhaul.services.cart;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.edgar.uhaul.models.Location;
 import com.edgar.uhaul.models.PackingSupply;
@@ -36,7 +38,10 @@ public class TruckOrderService {
 	
 	
 	BigDecimal  packSuppliesSum = new BigDecimal("0.00");
+	HashSet<PackingSupply> pSupplies = new HashSet<>();
 	
+	
+	@Transactional
 	public TruckOrder newTruckOrderCart(TruckOrderRequest truckOrderRequest) {			
 		TruckOrder truckOrder = new TruckOrder();	
 				
@@ -48,25 +53,48 @@ public class TruckOrderService {
 						.filter(t -> t.getSupplyName() != null && t.getSupplyName().equals(e) 
 						).collect(Collectors.toList());
 				
-				supplies.forEach(t -> truckOrder.getPackingSupplies().add(t));
+				
+				
+				
+				supplies.forEach(t -> pSupplies.add(t));			
 				
 				packSuppliesSum = supplies.stream()
-					    .map(PackingSupply::getSupplyPrice)
-					    .reduce(BigDecimal::add)
-					    .get();
+		                .map(x -> x.getSupplyPrice()) // map
+		                .reduce(BigDecimal.ZERO, BigDecimal::add);
+					    
 			});	
 		}
 		
-		if(!truckOrderRequest.getStorageName().equals(null)) {
+		truckOrder.setPackingSupplies(pSupplies);
+		
+		BigDecimal storageStartFee ;
+		
+		if(truckOrderRequest.getStorageName() != ("")) {
 			Storage storage = storageRepository.findByStorageName(truckOrderRequest.getStorageName()).get();
 			truckOrder.setStorage(storage);
+			storageStartFee = new BigDecimal(truckOrder.getStorage().getMonthlyFee().doubleValue());
 		}
+		else { 
+			truckOrder.setStorage(null);
+			storageStartFee = new BigDecimal("0.00");
+			};	
 		
 		Location location_pickUp = locationRepository.findByLocationName(truckOrderRequest.getPickUpLocation()).get();
 		truckOrder.setPickUpLocation(location_pickUp);
 		
-		Location location_dropOff = locationRepository.findByLocationName(truckOrderRequest.getDropOffLocation()).get();
-		truckOrder.setPickUpLocation(location_dropOff);
+		
+		if(truckOrderRequest.getDropOffLocation() == "") {
+			truckOrder.setDropOffLocation(truckOrder.getPickUpLocation());
+		}
+		
+		else {
+			
+			Location location_dropOff = locationRepository.findByLocationName(truckOrderRequest.getDropOffLocation()).get();
+			truckOrder.setDropOffLocation(location_dropOff);
+			
+		}
+		
+		
 		
 		Truck truck = truckRepository.findByTruckName(truckOrderRequest.getTruckName()).get();
 		truckOrder.setTruck(truck);
@@ -74,7 +102,7 @@ public class TruckOrderService {
 		truckOrder.setPickUpDate(truckOrderRequest.getPickUpDate());
 			
 		
-		truckOrder.setTotalPriceDueToday(truckOrder.getStorage().getMonthlyFee()
+		truckOrder.setTotalPriceDueToday(storageStartFee
 				.add(truckOrder.getTruck().getStartPrice().add(packSuppliesSum)
 						));
 			

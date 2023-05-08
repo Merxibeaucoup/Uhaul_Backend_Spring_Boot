@@ -20,7 +20,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @RequiredArgsConstructor
-@Table(name = "pickup_order")
+@Table(name = "pickup_truck_order")
 public class TruckOrder extends BaseEntity {
 
 	@NotNull
@@ -39,7 +39,7 @@ public class TruckOrder extends BaseEntity {
 	private Truck truck;
 
 	@Nullable
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
 	private Set<PackingSupply> packingSupplies;
 
 	@OneToOne
