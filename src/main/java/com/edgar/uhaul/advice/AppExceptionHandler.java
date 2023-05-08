@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.edgar.uhaul.exceptions.DateIsNotTodayOrAfterTodayException;
 import com.edgar.uhaul.exceptions.LocationAlreadyExistsException;
 import com.edgar.uhaul.exceptions.LocationCantHaveStorageUnitsException;
 import com.edgar.uhaul.exceptions.LocationDoesntExistException;
@@ -72,6 +73,13 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 	
 	@ExceptionHandler(PackingSupplyDoesntExistException.class)
 	public ResponseEntity<Object> handleTruckDoesntExistException(PackingSupplyDoesntExistException ex, WebRequest request) {
+
+		return new ResponseEntity<>(new ApiError(ex.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now()),
+				HttpStatus.BAD_REQUEST);
+	}
+	
+	@ExceptionHandler(DateIsNotTodayOrAfterTodayException.class)
+	public ResponseEntity<Object> handleDateIsNotTodayOrAfterTodayException(DateIsNotTodayOrAfterTodayException ex, WebRequest request) {
 
 		return new ResponseEntity<>(new ApiError(ex.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now()),
 				HttpStatus.BAD_REQUEST);

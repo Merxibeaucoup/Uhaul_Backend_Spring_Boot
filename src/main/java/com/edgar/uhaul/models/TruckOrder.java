@@ -4,11 +4,17 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Set;
 
+import com.edgar.uhaul.models.enums.OrderStatus;
+import com.edgar.uhaul.security.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.annotation.Nullable;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
@@ -39,7 +45,7 @@ public class TruckOrder extends BaseEntity {
 	private Truck truck;
 
 	@Nullable
-	@OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+	@ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
 	private Set<PackingSupply> packingSupplies;
 
 	@OneToOne
@@ -49,5 +55,12 @@ public class TruckOrder extends BaseEntity {
 	private BigDecimal totalPriceDueToday;
 	
 	private BigDecimal overallTotal;
+	
+	@OneToOne
+	@JsonIgnore
+	private User client;
+	
+	@Enumerated(EnumType.STRING)
+	private OrderStatus orderStatus;
 
 }
