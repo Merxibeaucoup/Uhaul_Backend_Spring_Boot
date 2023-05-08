@@ -61,15 +61,15 @@ public class TruckOrderService {
 				
 				
 				supplies.forEach(t -> pSupplies.add(t));			
-				
-				packSuppliesSum = supplies.stream()
-		                .map(x -> x.getSupplyPrice().add(packSuppliesSum)) // map
-		                .reduce(BigDecimal.ZERO, BigDecimal::add);
 					    
 			});	
 		}
 		
 		truckOrder.setPackingSupplies(pSupplies);
+		
+		packSuppliesSum = truckOrder.getPackingSupplies().stream()
+                .map(x -> x.getSupplyPrice()) // map
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
 		
 		BigDecimal storageStartFee ;
 		
@@ -107,9 +107,9 @@ public class TruckOrderService {
 		
 		truckOrder.setPickUpDate(truckOrderRequest.getPickUpDate());
 
-		truckOrder.setTotalPriceDueToday(storageStartFee
-				.add(truckOrder.getTruck().getStartPrice().add(packSuppliesSum)
-						));
+		truckOrder.setTotalPriceDueToday(
+				truckOrder.getTruck().getStartPrice().add(packSuppliesSum).add(storageStartFee)
+						);
 		
 		truckOrder.setClient(currentUser);
 		
@@ -120,7 +120,7 @@ public class TruckOrderService {
 			truckOrder.setOrderStatus(OrderStatus.RENTED);		
 			}
 		else 
-			throw new DateIsNotTodayOrAfterTodayException("date :: " + truckOrderRequest.getPickUpDate() + "is not today or after today ");
+			throw new DateIsNotTodayOrAfterTodayException("date :: " + truckOrderRequest.getPickUpDate() + " is not today or after today ");
 		
 			
 		return truckOrderRepository.save(truckOrder);
