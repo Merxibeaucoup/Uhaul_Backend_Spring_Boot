@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.edgar.uhaul.exceptions.DateIsNotTodayOrAfterTodayException;
+import com.edgar.uhaul.exceptions.TruckOrderCanNotBeCancelled;
+import com.edgar.uhaul.exceptions.TruckOrderDoesntExistException;
 import com.edgar.uhaul.models.Location;
 import com.edgar.uhaul.models.PackingSupply;
 import com.edgar.uhaul.models.Storage;
@@ -47,6 +49,7 @@ public class TruckOrderService {
 	LocalDate today = LocalDate.now();
 	
 	
+	/* new truck order */
 	@Transactional
 	public TruckOrder newTruckOrderCart(TruckOrderRequest truckOrderRequest, User currentUser) {			
 		TruckOrder truckOrder = new TruckOrder();	
@@ -124,6 +127,48 @@ public class TruckOrderService {
 			
 		return truckOrderRepository.save(truckOrder);
 
+	}
+	
+	/* all truck orders */
+	public List<TruckOrder> getAllTruckOrders(){
+		return truckOrderRepository.findAll();
+	}
+	
+	/* get truck order by id */
+	public TruckOrder getTruckOrderById(Long id) {
+		return truckOrderRepository.findById(id).orElse(null);
+	}
+	
+	/* delete truck order by id */
+	public void deleteTruckOrderById(Long id) {
+		truckOrderRepository.deleteById(id);
+	}
+	
+	/* cancel truckOrder reservation  -> create a scheduler to delete from db after 48 hours */
+	public void cancelTruckOrderReservation(Long id) {
+		TruckOrder truckOrder = truckOrderRepository.findById(id)
+				.orElseThrow(()-> new TruckOrderDoesntExistException("truck order with id :: "+ id+ " doesnt exist"));	
+		
+		if(truckOrder.getOrderStatus() == OrderStatus.RESERVED) {
+			truckOrder.setOrderStatus(OrderStatus.CANCELLED);
+		}
+		else if(truckOrder.getOrderStatus() == OrderStatus.RENTED) {
+			throw new TruckOrderCanNotBeCancelled(" truckOrder with id :: "+ id+ " can not be cancelled, truck already rented out");
+		}
+		
+		
+		Storage storage = truckOrder.getStorage();
+		storage.setQuantityAtLocation(storage.getQuantityAtLocation() + 1);
+		
+		Truck truck = truckOrder.getTruck();
+		truck.setQuantityAtLocation(truck.getQuantityAtLocation()+ 1);
+			
+		truckOrder.setOverallTotal(packSuppliesSum);
+		
+		storageRepository.save(storage);
+		truckRepository.save(truck);
+		
+		truckOrderRepository.save(truckOrder);
 	}
 
 }
