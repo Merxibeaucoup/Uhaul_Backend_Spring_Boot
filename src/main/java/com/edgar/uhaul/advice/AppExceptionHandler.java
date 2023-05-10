@@ -16,9 +16,10 @@ import com.edgar.uhaul.exceptions.LocationDoesntExistException;
 import com.edgar.uhaul.exceptions.PackingSupplyAlreadyExistsException;
 import com.edgar.uhaul.exceptions.PackingSupplyDoesntExistException;
 import com.edgar.uhaul.exceptions.StorageAlreadyExistsException;
+import com.edgar.uhaul.exceptions.StorageInsuranceAlreadyExistsException;
 import com.edgar.uhaul.exceptions.TruckAlreadyExistsException;
 import com.edgar.uhaul.exceptions.TruckDoesntExistException;
-import com.edgar.uhaul.exceptions.TruckOrderCanNotBeCancelled;
+import com.edgar.uhaul.exceptions.TruckOrderCanNotBeCancelledException;
 import com.edgar.uhaul.exceptions.TruckOrderDoesntExistException;
 
 @ControllerAdvice
@@ -95,8 +96,15 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 	}
 	
 	
-	@ExceptionHandler(TruckOrderCanNotBeCancelled.class)
-	public ResponseEntity<Object> handleTruckOrderCanNotBeCancelled(TruckOrderCanNotBeCancelled ex, WebRequest request) {
+	@ExceptionHandler(TruckOrderCanNotBeCancelledException.class)
+	public ResponseEntity<Object> handleTruckOrderCanNotBeCancelledException(TruckOrderCanNotBeCancelledException ex, WebRequest request) {
+
+		return new ResponseEntity<>(new ApiError(ex.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now()),
+				HttpStatus.BAD_REQUEST);
+	}
+	
+	@ExceptionHandler(StorageInsuranceAlreadyExistsException.class)
+	public ResponseEntity<Object> handleStorageInsuranceAlreadyExistsException(StorageInsuranceAlreadyExistsException ex, WebRequest request) {
 
 		return new ResponseEntity<>(new ApiError(ex.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now()),
 				HttpStatus.BAD_REQUEST);

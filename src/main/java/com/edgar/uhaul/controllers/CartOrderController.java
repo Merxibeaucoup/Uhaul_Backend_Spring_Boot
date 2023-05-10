@@ -1,7 +1,13 @@
 package com.edgar.uhaul.controllers;
 
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,10 +26,31 @@ import lombok.RequiredArgsConstructor;
 public class CartOrderController {
 
 	private final TruckOrderService truckOrderService;
+	
+	
+	/** truckOrder Services **/
 
-	@PostMapping("/new")
+	@PostMapping("/truck-order/new")
 	public ResponseEntity<TruckOrder> newTruckOrder(@RequestBody TruckOrderRequest truckOrderRequest, @AuthenticationPrincipal User user) {
 		return ResponseEntity.ok(truckOrderService.newTruckOrderCart(truckOrderRequest, user));
 	}
+	
+	@GetMapping("/truck-order/all")
+	public ResponseEntity<List<TruckOrder>> getAllTruckOrders(){
+		return ResponseEntity.ok(truckOrderService.getAllTruckOrders());
+	}
+	
+	@GetMapping("/truck-order/get/{id}")
+	public ResponseEntity<TruckOrder> getTruckOrderById(@PathVariable Long id){
+		return ResponseEntity.ok(truckOrderService.getTruckOrderById(id));
+	}
+	
+	@DeleteMapping("/truck-order/delete/{id}")
+	public ResponseEntity<?> deleteTruckOrderbyId(@PathVariable Long id){
+		 truckOrderService.deleteTruckOrderById(id);
+		return new ResponseEntity<>(HttpStatus.ACCEPTED);
+	}
+	
+	/** storageOrder Services **/
 
 }
