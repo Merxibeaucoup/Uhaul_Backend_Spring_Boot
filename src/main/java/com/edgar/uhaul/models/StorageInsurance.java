@@ -31,6 +31,5 @@ public class StorageInsurance extends BaseEntity {
 	private String description;
 	
 	
-	/* finish serv, rep, contro for this  */
 
 }

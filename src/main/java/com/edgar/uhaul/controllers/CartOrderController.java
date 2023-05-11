@@ -13,9 +13,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.edgar.uhaul.models.StorageOrder;
 import com.edgar.uhaul.models.TruckOrder;
+import com.edgar.uhaul.requests.StorageOrderRequest;
 import com.edgar.uhaul.requests.TruckOrderRequest;
 import com.edgar.uhaul.security.user.User;
+import com.edgar.uhaul.services.cart.StorageOrderService;
 import com.edgar.uhaul.services.cart.TruckOrderService;
 
 import lombok.RequiredArgsConstructor;
@@ -26,6 +29,8 @@ import lombok.RequiredArgsConstructor;
 public class CartOrderController {
 
 	private final TruckOrderService truckOrderService;
+	
+	private final StorageOrderService storageOrderService;
 	
 	
 	/** truckOrder Services **/
@@ -52,5 +57,15 @@ public class CartOrderController {
 	}
 	
 	/** storageOrder Services **/
+	
+	@PostMapping("/storage-order/new")
+	public ResponseEntity<StorageOrder> newStorageOrder(@RequestBody StorageOrderRequest storageOrderRequest, @AuthenticationPrincipal User user){
+		return ResponseEntity.ok(storageOrderService.newStorageOrder(storageOrderRequest, user));
+	}
+	
+	@GetMapping("/truck-order/all")
+	public ResponseEntity<List<StorageOrder>> getAllStorageOrders(){
+		return ResponseEntity.ok(storageOrderService.allStorageOrders());
+	}
 
 }

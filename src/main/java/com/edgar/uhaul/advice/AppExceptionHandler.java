@@ -17,6 +17,7 @@ import com.edgar.uhaul.exceptions.PackingSupplyAlreadyExistsException;
 import com.edgar.uhaul.exceptions.PackingSupplyDoesntExistException;
 import com.edgar.uhaul.exceptions.StorageAlreadyExistsException;
 import com.edgar.uhaul.exceptions.StorageInsuranceAlreadyExistsException;
+import com.edgar.uhaul.exceptions.StorageInsuranceDoesntExistException;
 import com.edgar.uhaul.exceptions.TruckAlreadyExistsException;
 import com.edgar.uhaul.exceptions.TruckDoesntExistException;
 import com.edgar.uhaul.exceptions.TruckOrderCanNotBeCancelledException;
@@ -105,6 +106,13 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 	
 	@ExceptionHandler(StorageInsuranceAlreadyExistsException.class)
 	public ResponseEntity<Object> handleStorageInsuranceAlreadyExistsException(StorageInsuranceAlreadyExistsException ex, WebRequest request) {
+
+		return new ResponseEntity<>(new ApiError(ex.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now()),
+				HttpStatus.BAD_REQUEST);
+	}
+	
+	@ExceptionHandler(StorageInsuranceDoesntExistException.class)
+	public ResponseEntity<Object> handleStorageInsuranceDoesntExistException(StorageInsuranceDoesntExistException ex, WebRequest request) {
 
 		return new ResponseEntity<>(new ApiError(ex.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now()),
 				HttpStatus.BAD_REQUEST);
