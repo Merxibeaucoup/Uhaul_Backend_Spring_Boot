@@ -15,7 +15,7 @@ import com.edgar.uhaul.services.StorageInsuranceService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/vi/insurance")
+@RequestMapping("/api/v1/insurance")
 @RequiredArgsConstructor
 public class InsuranceController {
 	

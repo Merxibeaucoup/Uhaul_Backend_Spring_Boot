@@ -48,6 +48,7 @@ public class StorageOrderService {
 		
 		Storage storage = storageRepository.findByStorageName(orderRequest.getStorageName())
 				.orElseThrow(() -> new StorageUnitsDoesntExistAtLocationException("Storage unit doesnt exist"));
+		storage.setQuantityAtLocation(storage.getQuantityAtLocation()-1);
 		storageOrder.setStorageName(storage);
 		
 		if(orderRequest.getMoveInDate().equals(today)) {
@@ -77,5 +78,11 @@ public class StorageOrderService {
 	public List<StorageOrder> allStorageOrders(){
 		return storageOrderRepository.findAll();
 	}
+	
+	public StorageOrder getStorageOrderById(Long id) {
+		return storageOrderRepository.findById(id).get();
+	}
+	
+	
 
 }

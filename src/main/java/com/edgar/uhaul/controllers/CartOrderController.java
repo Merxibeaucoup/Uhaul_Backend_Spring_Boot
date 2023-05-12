@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -50,6 +51,12 @@ public class CartOrderController {
 		return ResponseEntity.ok(truckOrderService.getTruckOrderById(id));
 	}
 	
+	@PutMapping("/truck-order/cancel/{id}")
+	public ResponseEntity<?> cancelTruckorder(@PathVariable Long id){
+		truckOrderService.cancelTruckOrderReservation(id);
+		return new ResponseEntity<>(HttpStatus.ACCEPTED);
+	}
+	
 	@DeleteMapping("/truck-order/delete/{id}")
 	public ResponseEntity<?> deleteTruckOrderbyId(@PathVariable Long id){
 		 truckOrderService.deleteTruckOrderById(id);
@@ -63,9 +70,14 @@ public class CartOrderController {
 		return ResponseEntity.ok(storageOrderService.newStorageOrder(storageOrderRequest, user));
 	}
 	
-	@GetMapping("/truck-order/all")
+	@GetMapping("/storage-order/all")
 	public ResponseEntity<List<StorageOrder>> getAllStorageOrders(){
 		return ResponseEntity.ok(storageOrderService.allStorageOrders());
+	}
+	
+	@GetMapping("storage-order/get/{id}")
+	public ResponseEntity<StorageOrder> getStorageOrderById(@PathVariable Long id){
+		return ResponseEntity.ok(storageOrderService.getStorageOrderById(id));
 	}
 
 }

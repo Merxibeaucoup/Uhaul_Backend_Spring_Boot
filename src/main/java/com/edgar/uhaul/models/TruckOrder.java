@@ -62,5 +62,7 @@ public class TruckOrder extends BaseEntity {
 	
 	@Enumerated(EnumType.STRING)
 	private OrderStatus orderStatus;
+	
+	private Boolean isCancelled;
 
 }

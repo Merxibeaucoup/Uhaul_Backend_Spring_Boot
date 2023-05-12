@@ -107,6 +107,7 @@ public class TruckOrderService {
 				.setTotalPriceDueToday(truckOrder.getTruck().getStartPrice().add(packSuppliesSum).add(storageStartFee));
 
 		truckOrder.setClient(currentUser);
+		truckOrder.setIsCancelled(false);
 
 		if (truckOrderRequest.getPickUpDate().isAfter(today)) {
 			truckOrder.setOrderStatus(OrderStatus.RESERVED);
@@ -139,7 +140,11 @@ public class TruckOrderService {
 	 * cancel truckOrder reservation -> create a scheduler to delete from db after
 	 * 48 hours
 	 */
+	@Transactional
 	public void cancelTruckOrderReservation(Long id) {
+		
+		BigDecimal noFees = new BigDecimal("0.00");
+		
 		TruckOrder truckOrder = truckOrderRepository.findById(id).orElseThrow(
 				() -> new TruckOrderDoesntExistException("truck order with id :: " + id + " doesnt exist"));
 
@@ -149,16 +154,23 @@ public class TruckOrderService {
 			throw new TruckOrderCanNotBeCancelledException(
 					" truckOrder with id :: " + id + " can not be cancelled, truck already rented out");
 		}
-
-		Storage storage = truckOrder.getStorage();
-		storage.setQuantityAtLocation(storage.getQuantityAtLocation() + 1);
-
+		
+		
+		if(truckOrder.getStorage() != null) {	
+			Storage storage = truckOrder.getStorage();
+			storage.setQuantityAtLocation(storage.getQuantityAtLocation() + 1);
+			storageRepository.save(storage);
+		}
+		
+		
 		Truck truck = truckOrder.getTruck();
 		truck.setQuantityAtLocation(truck.getQuantityAtLocation() + 1);
 
-		truckOrder.setOverallTotal(packSuppliesSum);
-
-		storageRepository.save(storage);
+		truckOrder.setOverallTotal(noFees);
+		truckOrder.setTotalPriceDueToday(noFees);
+		
+		truckOrder.setIsCancelled(true);
+		
 		truckRepository.save(truck);
 
 		truckOrderRepository.save(truckOrder);

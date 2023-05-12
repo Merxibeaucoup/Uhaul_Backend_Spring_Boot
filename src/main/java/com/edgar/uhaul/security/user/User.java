@@ -17,14 +17,21 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.Builder;
 
 @Entity
 @Builder
-@Table(name ="uhaul_user")
+@Table(name ="uhaul_user",
+uniqueConstraints = {
+	       
+        @UniqueConstraint(columnNames = "email")
+})
 public class User implements UserDetails {
 
 	
+
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
