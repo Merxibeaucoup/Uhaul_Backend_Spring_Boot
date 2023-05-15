@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import com.edgar.uhaul.exceptions.LocationDoesntExistException;
 import com.edgar.uhaul.exceptions.StorageInsuranceDoesntExistException;
-import com.edgar.uhaul.exceptions.StorageUnitsDoesntExistAtLocationException;
 import com.edgar.uhaul.models.Location;
 import com.edgar.uhaul.models.Storage;
 import com.edgar.uhaul.models.StorageInsurance;
@@ -42,14 +41,25 @@ public class StorageOrderService {
 
 		StorageOrder storageOrder = new StorageOrder();	
 		
+		StorageInsurance insurance = storageInsuranceRepository.findByName(orderRequest.getStorageInsurance())
+				.orElseThrow(()-> new StorageInsuranceDoesntExistException("Storage insurance with name :: "+orderRequest.getStorageInsurance()+ " doesnt exist"));
+			
+		storageOrder.setPropertyInsurance(insurance);	
+		
 		Location location = locationRepository.findByLocationName(orderRequest.getMoveInLocation())
 				.orElseThrow(()-> new LocationDoesntExistException("location with name :: "+orderRequest.getMoveInLocation()+ " doesnt exist"));	
 		storageOrder.setStorageLocation(location);
 		
-		Storage storage = storageRepository.findByStorageName(orderRequest.getStorageName())
-				.orElseThrow(() -> new StorageUnitsDoesntExistAtLocationException("Storage unit doesnt exist"));
-		storage.setQuantityAtLocation(storage.getQuantityAtLocation()-1);
-		storageOrder.setStorageName(storage);
+		//List solves query did not return a unique result java.persistence.NonUniqueResultException
+		List<Storage> storage = storageRepository.findByStorageName(orderRequest.getStorageName());
+		
+		storage.forEach(s ->{		
+			s.setQuantityAtLocation(s.getQuantityAtLocation()-1);
+			storageOrder.setStorageName(s);
+			totalDueToday = s.getMonthlyFee().add(insurance.getPrice());
+		});
+				
+		
 		
 		if(orderRequest.getMoveInDate().equals(today)) {
 			storageOrder.setOrderStatus(OrderStatus.RENTED);
@@ -59,15 +69,9 @@ public class StorageOrderService {
 		}
 		
 		storageOrder.setMoveInDate(orderRequest.getMoveInDate());
-		
-		StorageInsurance insurance = storageInsuranceRepository.findByName(orderRequest.getStorageInsurance())
-				.orElseThrow(()-> new StorageInsuranceDoesntExistException("Storage insurance with name :: "+orderRequest.getStorageInsurance()+ " doesnt exist"));
 			
-		storageOrder.setPropertyInsurance(insurance);	
 		storageOrder.setClient(user);
-		
-		totalDueToday = storage.getMonthlyFee().add(insurance.getPrice());
-		
+				
 		storageOrder.setTotalDueToday(totalDueToday);
 		
 		return storageOrderRepository.save(storageOrder);

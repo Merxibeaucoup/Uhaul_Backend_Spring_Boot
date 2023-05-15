@@ -14,8 +14,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -33,30 +34,36 @@ public class TruckOrder extends BaseEntity {
 	private LocalDate pickUpDate;
 	
 	@NotNull
-	@OneToOne
+	@ManyToOne
+	@JoinColumn(referencedColumnName = "id")
 	private Location pickUpLocation;
 	
 	@Nullable
-	@OneToOne
+	@ManyToOne
+	@JoinColumn(referencedColumnName = "id")
 	private Location dropOffLocation;
 
 	@NotNull
-	@OneToOne
+	@ManyToOne
+	@JoinColumn(referencedColumnName = "id")
 	private Truck truck;
 
 	@Nullable
 	@ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
 	private Set<PackingSupply> packingSupplies;
 
-	@OneToOne
+	
 	@Nullable
+	@ManyToOne
+	@JoinColumn(referencedColumnName = "id")
 	private Storage storage;
 
 	private BigDecimal totalPriceDueToday;
 	
 	private BigDecimal overallTotal;
 	
-	@OneToOne
+	@ManyToOne
+	@JoinColumn(referencedColumnName = "id")
 	@JsonIgnore
 	private User client;
 	
@@ -64,5 +71,9 @@ public class TruckOrder extends BaseEntity {
 	private OrderStatus orderStatus;
 	
 	private Boolean isCancelled;
+	
+	private Boolean isPickedUp;
+	
+	private Boolean isReturned;
 
 }

@@ -45,6 +45,7 @@ public class TruckOrderService {
 	HashSet<PackingSupply> pSupplies = new HashSet<>();
 
 	LocalDate today = LocalDate.now();
+	BigDecimal storageStartFee;
 
 	/* new truck order */
 	@Transactional
@@ -67,14 +68,21 @@ public class TruckOrderService {
 		packSuppliesSum = truckOrder.getPackingSupplies().stream().map(x -> x.getSupplyPrice()) // map
 				.reduce(BigDecimal.ZERO, BigDecimal::add);
 
-		BigDecimal storageStartFee;
+		
 
 		if (truckOrderRequest.getStorageName() != ("")) {
-			Storage storage = storageRepository.findByStorageName(truckOrderRequest.getStorageName()).get();
-			truckOrder.setStorage(storage);
-			storageStartFee = new BigDecimal(truckOrder.getStorage().getMonthlyFee().doubleValue());
-			storage.setQuantityAtLocation(storage.getQuantityAtLocation() - 1);
-			storageRepository.save(storage);
+			
+			List<Storage> storage = storageRepository.findByStorageName(truckOrderRequest.getStorageName());
+			
+			storage.forEach(s->{				
+				truckOrder.setStorage(s);
+				storageStartFee = new BigDecimal(truckOrder.getStorage().getMonthlyFee().doubleValue());
+				s.setQuantityAtLocation(s.getQuantityAtLocation() - 1);
+				storageRepository.save(s);
+			});
+			
+			
+			
 		} else {
 			truckOrder.setStorage(null);
 			storageStartFee = new BigDecimal("0.00");
@@ -96,10 +104,14 @@ public class TruckOrderService {
 
 		}
 
-		Truck truck = truckRepository.findByTruckName(truckOrderRequest.getTruckName()).get();
-		truckOrder.setTruck(truck);
-		truck.setQuantityAtLocation(truck.getQuantityAtLocation() - 1);
-		truckRepository.save(truck);
+		List<Truck> truck = truckRepository.findByTruckName(truckOrderRequest.getTruckName());
+		
+		truck.forEach(t-> {
+			truckOrder.setTruck(t);
+			t.setQuantityAtLocation(t.getQuantityAtLocation() - 1);
+			truckRepository.save(t);
+		});
+		
 
 		truckOrder.setPickUpDate(truckOrderRequest.getPickUpDate());
 
@@ -111,11 +123,17 @@ public class TruckOrderService {
 
 		if (truckOrderRequest.getPickUpDate().isAfter(today)) {
 			truckOrder.setOrderStatus(OrderStatus.RESERVED);
+			truckOrder.setIsPickedUp(false);
+			truckOrder.setIsReturned(false);
 		} else if (truckOrderRequest.getPickUpDate().isEqual(today)) {
 			truckOrder.setOrderStatus(OrderStatus.RENTED);
+			truckOrder.setIsPickedUp(true);
+			truckOrder.setIsReturned(false);		
 		} else
 			throw new DateIsNotTodayOrAfterTodayException(
 					"date :: " + truckOrderRequest.getPickUpDate() + " is not today or after today ");
+		
+		
 
 		return truckOrderRepository.save(truckOrder);
 
