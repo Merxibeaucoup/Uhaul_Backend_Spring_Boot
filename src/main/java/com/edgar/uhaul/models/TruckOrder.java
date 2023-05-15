@@ -19,6 +19,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -29,7 +30,8 @@ import lombok.Setter;
 @RequiredArgsConstructor
 @Table(name = "pickup_truck_order")
 public class TruckOrder extends BaseEntity {
-
+	
+	
 	@NotNull
 	private LocalDate pickUpDate;
 	
@@ -75,5 +77,8 @@ public class TruckOrder extends BaseEntity {
 	private Boolean isPickedUp;
 	
 	private Boolean isReturned;
+	
+	@Positive
+	private Integer MileageUsed;
 
 }

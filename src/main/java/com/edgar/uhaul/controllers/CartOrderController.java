@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.edgar.uhaul.models.StorageOrder;
 import com.edgar.uhaul.models.TruckOrder;
+import com.edgar.uhaul.requests.ReturnTruckRequest;
 import com.edgar.uhaul.requests.StorageOrderRequest;
 import com.edgar.uhaul.requests.TruckOrderRequest;
 import com.edgar.uhaul.security.user.User;
@@ -60,6 +61,18 @@ public class CartOrderController {
 	@DeleteMapping("/truck-order/delete/{id}")
 	public ResponseEntity<?> deleteTruckOrderbyId(@PathVariable Long id){
 		 truckOrderService.deleteTruckOrderById(id);
+		return new ResponseEntity<>(HttpStatus.ACCEPTED);
+	}
+	
+	@PutMapping("/truck-order/pick-up/{id}")
+	public ResponseEntity<?> pickUpReservedTruck(@PathVariable Long id){
+		truckOrderService.pickUpReservedTruck(id);
+		return new ResponseEntity<>(HttpStatus.ACCEPTED);
+	}
+	
+	@PutMapping("/truck-order/return/{id}")
+	public ResponseEntity<?> returnRentedTruck(@PathVariable Long id, @RequestBody ReturnTruckRequest req){
+		truckOrderService.returnRentedTruck(id, req);
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
 	}
 	

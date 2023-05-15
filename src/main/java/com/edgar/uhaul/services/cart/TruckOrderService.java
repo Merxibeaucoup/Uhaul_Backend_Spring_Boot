@@ -24,6 +24,7 @@ import com.edgar.uhaul.repositories.StorageRepository;
 import com.edgar.uhaul.repositories.TruckOrderRepository;
 import com.edgar.uhaul.repositories.TruckRepository;
 import com.edgar.uhaul.repositories.packingSupplyRepository;
+import com.edgar.uhaul.requests.ReturnTruckRequest;
 import com.edgar.uhaul.requests.TruckOrderRequest;
 import com.edgar.uhaul.security.user.User;
 
@@ -191,6 +192,45 @@ public class TruckOrderService {
 		
 		truckRepository.save(truck);
 
+		truckOrderRepository.save(truckOrder);
+	}
+	
+	@Transactional
+	public void pickUpReservedTruck(Long id) {
+		TruckOrder truckOrder = truckOrderRepository.findById(id).orElseThrow(
+				() -> new TruckOrderDoesntExistException("truck order with id :: " + id + " doesnt exist"));
+		
+		if(truckOrder.getOrderStatus() == OrderStatus.RESERVED) {		
+			truckOrder.setIsPickedUp(true);
+			truckOrder.setOrderStatus(OrderStatus.RENTED);
+		}
+		else
+			throw new  TruckOrderDoesntExistException("truck order with id :: " + id + " is already rented out , canceled or doesnt exist");
+				
+		truckOrderRepository.save(truckOrder);
+	}
+	
+	
+	@Transactional
+	public void returnRentedTruck(Long id, ReturnTruckRequest request) {
+		
+		TruckOrder truckOrder = truckOrderRepository.findById(id).orElseThrow(
+				() -> new TruckOrderDoesntExistException("truck order with id :: " + id + " doesnt exist"));
+		
+		int totalMileageUsed = request.getMileageUsed();	
+		BigDecimal totalMilePrice = truckOrder.getTruck().getPricePerMile();
+		
+		if(truckOrder.getOrderStatus() == OrderStatus.RENTED) {
+			
+			truckOrder.setIsReturned(true);
+			truckOrder.setOverallTotal(		
+					totalMilePrice.multiply(BigDecimal.valueOf(totalMileageUsed))
+					);
+		}
+		else 
+			throw new TruckOrderDoesntExistException("Truck Order doesnt exist");
+	
+		
 		truckOrderRepository.save(truckOrder);
 	}
 
