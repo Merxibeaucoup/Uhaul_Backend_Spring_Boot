@@ -106,6 +106,7 @@ public class StorageOrderService {
 
 		if (storageOrder.getOrderStatus() == OrderStatus.RESERVED
 				&& (storageOrder.getMoveInDate().isEqual(today) || storageOrder.getMoveInDate().isAfter(today))) {
+			storageOrder.setOrderStatus(OrderStatus.RENTED);
 			storageOrder.setIsMovedIn(true);
 		} else
 			throw new StorageOrderDoesNotExistException(
