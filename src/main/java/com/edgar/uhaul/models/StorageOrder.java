@@ -5,14 +5,12 @@ import java.time.LocalDate;
 
 import com.edgar.uhaul.models.enums.OrderStatus;
 import com.edgar.uhaul.security.user.User;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -51,8 +49,8 @@ public class StorageOrder  extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	private OrderStatus orderStatus;
 	
-	@OneToOne
-	@JsonIgnore
+	@ManyToOne
+	@JoinColumn(referencedColumnName = "id")
 	private User client;
 	
 	private BigDecimal totalDueToday;

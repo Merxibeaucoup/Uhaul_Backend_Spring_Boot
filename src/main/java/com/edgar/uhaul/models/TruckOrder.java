@@ -6,7 +6,6 @@ import java.util.Set;
 
 import com.edgar.uhaul.models.enums.OrderStatus;
 import com.edgar.uhaul.security.user.User;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.annotation.Nullable;
 import jakarta.persistence.CascadeType;
@@ -66,7 +65,6 @@ public class TruckOrder extends BaseEntity {
 	
 	@ManyToOne
 	@JoinColumn(referencedColumnName = "id")
-	@JsonIgnore
 	private User client;
 	
 	@Enumerated(EnumType.STRING)

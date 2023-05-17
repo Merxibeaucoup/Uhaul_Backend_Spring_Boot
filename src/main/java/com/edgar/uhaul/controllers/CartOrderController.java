@@ -92,5 +92,25 @@ public class CartOrderController {
 	public ResponseEntity<StorageOrder> getStorageOrderById(@PathVariable Long id){
 		return ResponseEntity.ok(storageOrderService.getStorageOrderById(id));
 	}
+	
+	@PutMapping("storage-order/move-in/{id}")
+	public ResponseEntity<?> moveIntoStorageUnit(@PathVariable Long id){
+		storageOrderService.moveIntoStorageUnit(id);
+		return new  ResponseEntity<>(HttpStatus.ACCEPTED);
+	}
+	
+	@PutMapping("storage-order/move-out/{id}")
+	public ResponseEntity<?> moveOutOfStorageUnit(@PathVariable Long id){
+		storageOrderService.moveOutOfStorage(id);
+		return new  ResponseEntity<>(HttpStatus.ACCEPTED);
+	}
+	
+	@PutMapping("storage-order/cancel/{id}")
+	public ResponseEntity<?> cancelReservedStorageUnit(@PathVariable Long id){
+		storageOrderService.cancelReservedStorage(id);
+		return new  ResponseEntity<>(HttpStatus.ACCEPTED);
+	}
+	
+	
 
 }
