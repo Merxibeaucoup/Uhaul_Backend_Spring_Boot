@@ -18,6 +18,7 @@ import com.edgar.uhaul.exceptions.PackingSupplyDoesntExistException;
 import com.edgar.uhaul.exceptions.StorageAlreadyExistsException;
 import com.edgar.uhaul.exceptions.StorageInsuranceAlreadyExistsException;
 import com.edgar.uhaul.exceptions.StorageInsuranceDoesntExistException;
+import com.edgar.uhaul.exceptions.StorageOrderCantBeCreatedException;
 import com.edgar.uhaul.exceptions.StorageOrderDoesNotExistException;
 import com.edgar.uhaul.exceptions.TruckAlreadyExistsException;
 import com.edgar.uhaul.exceptions.TruckDoesntExistException;
@@ -112,6 +113,12 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 	public ResponseEntity<Object> handleStorageOrderDoesNotExistException(StorageOrderDoesNotExistException ex, WebRequest request) {
 		return new ResponseEntity<>(new ApiError(ex.getMessage(), HttpStatus.NOT_FOUND, LocalDateTime.now()),
 				HttpStatus.NOT_FOUND);
+	}
+	
+	@ExceptionHandler(StorageOrderCantBeCreatedException.class)
+	public ResponseEntity<Object> handleStorageOrderCantBeCreatedException(StorageOrderCantBeCreatedException ex, WebRequest request) {
+		return new ResponseEntity<>(new ApiError(ex.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now()),
+				HttpStatus.BAD_REQUEST);
 	}
 	
 	

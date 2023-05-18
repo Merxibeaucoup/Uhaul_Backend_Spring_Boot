@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.edgar.uhaul.exceptions.LocationDoesntExistException;
 import com.edgar.uhaul.exceptions.StorageInsuranceDoesntExistException;
+import com.edgar.uhaul.exceptions.StorageOrderCantBeCreatedException;
 import com.edgar.uhaul.exceptions.StorageOrderDoesNotExistException;
 import com.edgar.uhaul.models.Location;
 import com.edgar.uhaul.models.Storage;
@@ -66,7 +67,7 @@ public class StorageOrderService {
 			storageOrder.setStorageName(s);
 			totalDueToday = s.getMonthlyFee().add(insurance.getPrice());
 		});
-
+		
 		if (orderRequest.getMoveInDate().equals(today)) {
 			storageOrder.setOrderStatus(OrderStatus.RENTED);
 			storageOrder.setIsMovedIn(true);
@@ -78,13 +79,19 @@ public class StorageOrderService {
 			storageOrder.setIsMovedOut(false);
 			storageOrder.setIsCancelled(false);
 		}
+		else if(orderRequest.getMoveInDate().isBefore(today)) {
+			throw new StorageOrderCantBeCreatedException("storage order cant be be created , date is in the past");
+		}
 
+		
+		
 		storageOrder.setMoveInDate(orderRequest.getMoveInDate());
 
 		storageOrder.setClient(user);
 
 		storageOrder.setTotalDueToday(totalDueToday);
-
+		
+		
 		return storageOrderRepository.save(storageOrder);
 
 	}
@@ -161,11 +168,14 @@ public class StorageOrderService {
 						)
 				.collect(Collectors.toList());
 		
-		storageOrders.stream()
-		.forEach(t -> {
-			email = t.getClient().getEmail(); // use for mail sender !
-			dueToday = t.getStorageName().getMonthlyFee();
-		});
+		if(storageOrders.size()>0) {
+			storageOrders.stream()
+			.forEach(t -> {
+				email = t.getClient().getEmail(); // use for mail sender !  -> Mailer model
+				dueToday = t.getStorageName().getMonthlyFee();
+			});
+		}
+		
 	}
 
 }
