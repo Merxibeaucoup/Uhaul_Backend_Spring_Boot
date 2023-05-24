@@ -14,6 +14,7 @@ import com.edgar.uhaul.exceptions.DateIsNotTodayOrAfterTodayException;
 import com.edgar.uhaul.exceptions.TruckOrderCanNotBeCancelledException;
 import com.edgar.uhaul.exceptions.TruckOrderDoesntExistException;
 import com.edgar.uhaul.models.Location;
+import com.edgar.uhaul.models.MailerModel;
 import com.edgar.uhaul.models.PackingSupply;
 import com.edgar.uhaul.models.Storage;
 import com.edgar.uhaul.models.Truck;
@@ -27,6 +28,7 @@ import com.edgar.uhaul.repositories.packingSupplyRepository;
 import com.edgar.uhaul.requests.ReturnTruckRequest;
 import com.edgar.uhaul.requests.TruckOrderRequest;
 import com.edgar.uhaul.security.user.User;
+import com.edgar.uhaul.services.MailerModelService;
 
 @Service
 public class TruckOrderService {
@@ -41,6 +43,8 @@ public class TruckOrderService {
 	private packingSupplyRepository packingSupplyRepository;
 	@Autowired
 	private LocationRepository locationRepository;
+	@Autowired
+	private MailerModelService mailerModelService;
 
 	BigDecimal packSuppliesSum = new BigDecimal("0.00");
 	HashSet<PackingSupply> pSupplies = new HashSet<>();
@@ -135,9 +139,22 @@ public class TruckOrderService {
 					"date :: " + truckOrderRequest.getPickUpDate() + " is not today or after today ");
 		
 		
+		
+		MailerModel mailer = new MailerModel();
+		
 
+		mailer.setEmailFrom("edgarbriandt@gmail.com");
+		mailer.setEmailTo(currentUser.getEmail());	
+		mailer.setSubject("Thank you, here is your "+ truckOrder.getOrderStatus().toString().toLowerCase()+" receipt for : "+ truckOrder.getTruck().getTruckName());
+		mailer.setMessage("Hi "+ currentUser.getFirstname() +", \n\n"+
+				" \ntruck Details: "+
+				" \n\n\n enjoy the event \n\n \uD83E\uDD73\uD83E\uDD73\uD83E\uDD73\uD83E\uDD73\uD83E\uDD73"
+				);
+		
+		
+		
+		mailerModelService.sendMessage(mailer);
 		return truckOrderRepository.save(truckOrder);
-
 	}
 
 	/* all truck orders */
