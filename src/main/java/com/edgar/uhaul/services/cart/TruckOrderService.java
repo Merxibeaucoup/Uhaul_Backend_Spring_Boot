@@ -153,7 +153,7 @@ public class TruckOrderService {
 		
 		
 		
-		mailerModelService.sendMessage(mailer);
+		mailerModelService.sendEmail(mailer);
 		return truckOrderRepository.save(truckOrder);
 	}
 

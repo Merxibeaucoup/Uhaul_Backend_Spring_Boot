@@ -24,35 +24,75 @@ public class MailerModelService {
 	private MailerModelRepository modelRepository;
 	
 	
-	public MailerModel sendMessage(MailerModel mailerModel) {
+	/* send ses */
+	public void send(SimpleMailMessage mailMessage) {
+		this.mailSender.send(mailMessage);
+	}
+	
+	
+	/* send email */
+	public MailerModel sendEmail(MailerModel mailerModel) {
 		
 		mailerModel.setSentDateTime(LocalDateTime.now());
-			
+		
 		try {
 			
-			SimpleMailMessage message = new SimpleMailMessage();
+			SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
 			
-			message.setFrom(mailerModel.getEmailFrom());
-			message.setTo(mailerModel.getEmailTo());
-			message.setSubject(mailerModel.getSubject());
-			message.setText(mailerModel.getMessage());
-			this.mailSender.send(message);
-			
+			simpleMailMessage.setFrom(mailerModel.getEmailFrom());
+			simpleMailMessage.setTo(mailerModel.getEmailTo());
+			simpleMailMessage.setSubject(mailerModel.getSubject());
+			simpleMailMessage.setText(mailerModel.getMessage());
+
+			send(simpleMailMessage);
 			mailerModel.setStatus(EmailStatus.SENT);
 			
 			log.info("---Mesage Sent---");
 			
-		}
-		catch(RuntimeException e) {
+			
+		} catch(RuntimeException e) {
 			
 			mailerModel.setStatus(EmailStatus.FAILED); // else
 			log.info("---Mesage unable to send---");
 			
 		}
+
 		
 		return  modelRepository.save(mailerModel);
-		
-		
+
 	}
+
+	
+//	
+//	public MailerModel sendMessage(MailerModel mailerModel) {
+//		
+//		mailerModel.setSentDateTime(LocalDateTime.now());
+//			
+//		try {
+//			
+//			SimpleMailMessage message = new SimpleMailMessage();
+//			
+//			message.setFrom(mailerModel.getEmailFrom());
+//			message.setTo(mailerModel.getEmailTo());
+//			message.setSubject(mailerModel.getSubject());
+//			message.setText(mailerModel.getMessage());
+//			this.mailSender.send(message);
+//			
+//			mailerModel.setStatus(EmailStatus.SENT);
+//			
+//			log.info("---Mesage Sent---");
+//			
+//		}
+//		catch(RuntimeException e) {
+//			
+//			mailerModel.setStatus(EmailStatus.FAILED); // else
+//			log.info("---Mesage unable to send---");
+//			
+//		}
+//		
+//		return  modelRepository.save(mailerModel);
+//		
+//		
+//	}
 
 }
