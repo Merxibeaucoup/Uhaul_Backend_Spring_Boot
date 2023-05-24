@@ -148,7 +148,7 @@ public class TruckOrderService {
 		mailer.setSubject("Thank you, here is your "+ truckOrder.getOrderStatus().toString().toLowerCase()+" receipt for : "+ truckOrder.getTruck().getTruckName());
 		mailer.setMessage("Hi "+ currentUser.getFirstname() +", \n\n"+
 				" \ntruck Details: "+
-				" \n\n\n enjoy the event \n\n \uD83E\uDD73\uD83E\uDD73\uD83E\uDD73\uD83E\uDD73\uD83E\uDD73"
+				" \n\n\n enjoy the event \n\n \uD83E\uDD73\uD83E\uDD73\uD83E\uDD73\uD83E\uDD73\uD83E\uDD73\uD83E\uDD73"
 				);
 		
 		
